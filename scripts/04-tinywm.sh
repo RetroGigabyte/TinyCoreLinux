@@ -10,6 +10,7 @@ tar -xf tinywm.tar.gz
 cd tinywm-master
 
 gcc -o tinywm tinywm.c -lX11 -Os -pipe -fcf-protection=none
+mkdir -p $TC/usr/local/bin
 cp tinywm $TC/usr/local/bin/
 chmod +x $TC/usr/local/bin/tinywm
 
