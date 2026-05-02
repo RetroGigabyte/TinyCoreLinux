@@ -4,6 +4,9 @@ set -e
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export SCRIPTS="$REPO_DIR/scripts"
 export TC="${TC:-$REPO_DIR/output}"
+export TC_TGT=i686-tc-linux-gnu
+export LC_ALL=POSIX
+export PATH=$TC/tools/bin:/usr/local/bin:/bin:/usr/bin
 
 echo "=== Tiny Core Linux + TinyWM Build ==="
 echo "Repo: $REPO_DIR"

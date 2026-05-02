@@ -4,6 +4,9 @@ echo "--- [1/5] Building cross-toolchain ---"
 
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export TC="${TC:-$REPO_DIR/output}"
+export TC_TGT=i686-tc-linux-gnu
+export LC_ALL=POSIX
+export PATH=$TC/tools/bin:/usr/local/bin:/bin:/usr/bin
 
 cd "$REPO_DIR/src/toolchain"
 
