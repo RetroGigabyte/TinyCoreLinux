@@ -13,7 +13,7 @@ cd linux-6.6.8
 cp ../config-6.6.8-tinycore .config
 
 make oldconfig
-make CC="gcc -march=i486 -mtune=i686 -Os -pipe" \
+make CC=gcc KCFLAGS="-Os -pipe -fcf-protection=none" \
      -j$(nproc) bzImage modules
 
 mkdir -p $TC/boot
