@@ -15,31 +15,29 @@ patch -Np1 -i ../busybox-1.29.3_root_path.patch
 patch -Np1 -i ../busybox-1.33.0_modprobe.patch
 patch -Np0 -i ../busybox-1.33.0_tc_depmod.patch
 
-BB_CC="gcc"
-BB_CFLAGS="-flto -march=i486 -mtune=i686 -Os -pipe -fcf-protection=none -fno-stack-protector"
-BB_CXX="g++"
+BB_CFLAGS="-Os -pipe -fcf-protection=none -fno-stack-protector"
 BB_CXXFLAGS="$BB_CFLAGS -fno-exceptions -fno-rtti"
 
 # Build suid version
 cp ../busybox-1.36.1_config_suid .config
-sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS="-march=i486 -mtune=i686 -Os -pipe -fcf-protection=none -fno-stack-protector"/' .config
+sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS=""/' .config
 make oldconfig
-make CC="$BB_CC" CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
+make CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
      KBUILD_CFLAGS="$BB_CFLAGS" -j$(nproc)
 
 mkdir -p /tmp/pkg
-make CC="$BB_CC" CFLAGS="$BB_CFLAGS" KBUILD_CFLAGS="$BB_CFLAGS" \
+make CFLAGS="$BB_CFLAGS" KBUILD_CFLAGS="$BB_CFLAGS" \
      CONFIG_PREFIX=/tmp/pkg install
 mv /tmp/pkg/bin/busybox /tmp/pkg/bin/busybox.suid
 chmod u+s /tmp/pkg/bin/busybox.suid
 
 # Build nosuid version
 cp ../busybox-1.36.1_config_nosuid .config
-sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS="-march=i486 -mtune=i686 -Os -pipe -fcf-protection=none -fno-stack-protector"/' .config
+sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS=""/' .config
 make oldconfig
-make CC="$BB_CC" CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
+make CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
      KBUILD_CFLAGS="$BB_CFLAGS" -j$(nproc)
-make CC="$BB_CC" CFLAGS="$BB_CFLAGS" KBUILD_CFLAGS="$BB_CFLAGS" \
+make CFLAGS="$BB_CFLAGS" KBUILD_CFLAGS="$BB_CFLAGS" \
      CONFIG_PREFIX=/tmp/pkg install
 
 cp -r /tmp/pkg/* $TC/
