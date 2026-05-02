@@ -1,10 +1,10 @@
-FROM debian:12-slim
+FROM --platform=linux/amd64 debian:12-slim
 
 RUN apt-get update && apt-get install -y \
     build-essential gcc g++ make patch cpio \
     libncurses-dev libssl-dev libelf-dev \
     libx11-dev bc bison flex wget curl xz-utils \
-    genisoimage syslinux isolinux \
+    genisoimage syslinux syslinux-common isolinux \
     perl python3 texinfo gettext \
     gawk diffutils file findutils \
     autoconf automake libtool \
