@@ -9,7 +9,7 @@ cd "$REPO_DIR/tinywm"
 tar -xf tinywm.tar.gz
 cd tinywm-master
 
-gcc -o tinywm tinywm.c -lX11 -march=i486 -mtune=i686 -Os -pipe
+gcc -o tinywm tinywm.c -lX11 -Os -pipe -fcf-protection=none
 cp tinywm $TC/usr/local/bin/
 chmod +x $TC/usr/local/bin/tinywm
 
