@@ -2,7 +2,10 @@
 set -e
 echo "--- [1/5] Building cross-toolchain ---"
 
-cd /build/src/toolchain
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export TC="${TC:-$REPO_DIR/output}"
+
+cd "$REPO_DIR/src/toolchain"
 
 # Binutils (pass 1)
 echo "Building binutils..."
@@ -13,14 +16,13 @@ mkdir -p build && cd build
     --disable-nls --enable-gprofng=no --disable-werror
 make -j$(nproc)
 make install
-cd /build/src/toolchain
+cd "$REPO_DIR/src/toolchain"
 rm -rf binutils-2.41
 
 # GCC (pass 1 - cross compiler)
 echo "Building GCC pass 1..."
 tar -xf gcc-13.2.0.tar.xz
 cd gcc-13.2.0
-tar -xf ../glibc-2.38.tar.xz 2>/dev/null || true
 mkdir -p build && cd build
 ../configure \
     --target=$TC_TGT \
@@ -44,7 +46,7 @@ mkdir -p build && cd build
     --enable-languages=c,c++
 make -j$(nproc)
 make install
-cd /build/src/toolchain
+cd "$REPO_DIR/src/toolchain"
 
 # Linux headers
 echo "Installing Linux headers..."
@@ -54,14 +56,13 @@ make mrproper
 make headers
 find usr/include -name '.*h' -delete
 cp -rv usr/include $TC/usr/
-cd /build/src/toolchain
+cd "$REPO_DIR/src/toolchain"
 rm -rf linux-6.6.5
 
 # glibc
 echo "Building glibc..."
 tar -xf glibc-2.38.tar.xz
 cd glibc-2.38
-patch -Np1 -i ../../../src/toolchain/../../../src/toolchain/glibc-2.38-fhs-1.patch 2>/dev/null || true
 mkdir -p build && cd build
 echo "rootsbindir=/usr/sbin" > configparms
 ../configure \
@@ -75,6 +76,6 @@ echo "rootsbindir=/usr/sbin" > configparms
 make -j$(nproc)
 make DESTDIR=$TC install
 sed '/RTLDLIST=/s@/usr@@g' -i $TC/usr/bin/ldd
-cd /build/src/toolchain
+cd "$REPO_DIR/src/toolchain"
 
 echo "Toolchain done."

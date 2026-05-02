@@ -2,7 +2,10 @@
 set -e
 echo "--- [2/5] Building BusyBox ---"
 
-cd /build/src/busybox
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export TC="${TC:-$REPO_DIR/output}"
+
+cd "$REPO_DIR/src/busybox"
 
 tar -xf busybox-1.36.1.tar.bz2
 cd busybox-1.36.1
@@ -35,6 +38,6 @@ make CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe" \
      CONFIG_PREFIX=/tmp/pkg install
 
 cp -r /tmp/pkg/* $TC/
-cd /build/src/busybox
+cd "$REPO_DIR/src/busybox"
 
 echo "BusyBox done."

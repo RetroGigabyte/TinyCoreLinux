@@ -1,14 +1,20 @@
 #!/bin/bash
 set -e
 
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export SCRIPTS="$REPO_DIR/scripts"
+export TC="${TC:-$REPO_DIR/output}"
+
 echo "=== Tiny Core Linux + TinyWM Build ==="
+echo "Repo: $REPO_DIR"
+echo "Output: $TC"
 
 mkdir -p $TC/{usr,lib,var,etc,bin,sbin,tools,sources,dev,proc,sys,run}
 
-bash /build/scripts/01-toolchain.sh
-bash /build/scripts/02-busybox.sh
-bash /build/scripts/03-kernel.sh
-bash /build/scripts/04-tinywm.sh
-bash /build/scripts/05-iso.sh
+bash "$SCRIPTS/01-toolchain.sh"
+bash "$SCRIPTS/02-busybox.sh"
+bash "$SCRIPTS/03-kernel.sh"
+bash "$SCRIPTS/04-tinywm.sh"
+bash "$SCRIPTS/05-iso.sh"
 
-echo "=== Build complete: /build/output/custom-tcl-tinywm.iso ==="
+echo "=== Build complete: $TC/custom-tcl-tinywm.iso ==="

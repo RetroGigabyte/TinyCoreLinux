@@ -2,7 +2,10 @@
 set -e
 echo "--- [3/5] Building kernel ---"
 
-cd /build/src/kernel
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+export TC="${TC:-$REPO_DIR/output}"
+
+cd "$REPO_DIR/src/kernel"
 
 tar -xf linux-6.6.8-patched.txz
 cd linux-6.6.8
@@ -16,5 +19,5 @@ make CC="gcc -march=i486 -mtune=i686 -Os -pipe" \
 mkdir -p $TC/boot
 cp arch/x86/boot/bzImage $TC/boot/vmlinuz
 
-cd /build/src/kernel
+cd "$REPO_DIR/src/kernel"
 echo "Kernel done."
