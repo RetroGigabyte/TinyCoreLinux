@@ -15,27 +15,24 @@ patch -Np1 -i ../busybox-1.29.3_root_path.patch
 patch -Np1 -i ../busybox-1.33.0_modprobe.patch
 patch -Np0 -i ../busybox-1.33.0_tc_depmod.patch
 
+BB_CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe -fcf-protection=none"
+BB_CXX="g++ -flto -march=i486 -mtune=i686 -Os -pipe -fno-exceptions -fno-rtti -fcf-protection=none"
+
 # Build suid version
 cp ../busybox-1.36.1_config_suid .config
 make oldconfig
-make CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe" \
-     CXX="g++ -flto -march=i486 -mtune=i686 -Os -pipe -fno-exceptions -fno-rtti" \
-     -j$(nproc)
+make CC="$BB_CC" CXX="$BB_CXX" -j$(nproc)
 
 mkdir -p /tmp/pkg
-make CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe" \
-     CONFIG_PREFIX=/tmp/pkg install
+make CC="$BB_CC" CONFIG_PREFIX=/tmp/pkg install
 mv /tmp/pkg/bin/busybox /tmp/pkg/bin/busybox.suid
 chmod u+s /tmp/pkg/bin/busybox.suid
 
 # Build nosuid version
 cp ../busybox-1.36.1_config_nosuid .config
 make oldconfig
-make CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe" \
-     CXX="g++ -flto -march=i486 -mtune=i686 -Os -pipe -fno-exceptions -fno-rtti" \
-     -j$(nproc)
-make CC="gcc -flto -march=i486 -mtune=i686 -Os -pipe" \
-     CONFIG_PREFIX=/tmp/pkg install
+make CC="$BB_CC" CXX="$BB_CXX" -j$(nproc)
+make CC="$BB_CC" CONFIG_PREFIX=/tmp/pkg install
 
 cp -r /tmp/pkg/* $TC/
 cd "$REPO_DIR/src/busybox"
