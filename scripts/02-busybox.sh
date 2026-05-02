@@ -18,9 +18,17 @@ patch -Np0 -i ../busybox-1.33.0_tc_depmod.patch
 BB_CFLAGS="-Os -pipe -fcf-protection=none -fno-stack-protector"
 BB_CXXFLAGS="$BB_CFLAGS -fno-exceptions -fno-rtti"
 
+patch_config() {
+    sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS=""/' .config
+    # Disable NFS mount support — requires rpc/rpc.h (libtirpc) not available
+    sed -i 's/^CONFIG_FEATURE_MOUNT_NFS=.*/CONFIG_FEATURE_MOUNT_NFS=n/' .config
+    sed -i '/^CONFIG_FEATURE_MOUNT_NFS/d' .config
+    echo "# CONFIG_FEATURE_MOUNT_NFS is not set" >> .config
+}
+
 # Build suid version
 cp ../busybox-1.36.1_config_suid .config
-sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS=""/' .config
+patch_config
 make oldconfig
 make CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
      KBUILD_CFLAGS="$BB_CFLAGS" -j$(nproc)
@@ -33,7 +41,7 @@ chmod u+s /tmp/pkg/bin/busybox.suid
 
 # Build nosuid version
 cp ../busybox-1.36.1_config_nosuid .config
-sed -i 's/^CONFIG_EXTRA_CFLAGS=.*/CONFIG_EXTRA_CFLAGS=""/' .config
+patch_config
 make oldconfig
 make CFLAGS="$BB_CFLAGS" CXXFLAGS="$BB_CXXFLAGS" \
      KBUILD_CFLAGS="$BB_CFLAGS" -j$(nproc)
