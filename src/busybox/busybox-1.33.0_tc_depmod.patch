@@ -1,0 +1,11 @@
+--- modutils/depmod.c.orig	2021-01-16 10:43:34.026183629 +0000
++++ modutils/depmod.c	2021-01-16 10:51:06.919526790 +0000
+@@ -206,7 +206,7 @@
+ 				parse_module, NULL, &modules);
+ 		} while (*++argv);
+ 	} else {
+-		recursive_action(".", ACTION_RECURSE,
++		recursive_action(".", ACTION_RECURSE | ACTION_FOLLOWLINKS,
+ 				parse_module, NULL, &modules);
+ 	}
+ 

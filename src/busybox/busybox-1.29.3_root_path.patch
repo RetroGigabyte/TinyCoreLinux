@@ -1,0 +1,11 @@
+--- ./include/libbb.h.orig	2018-11-21 10:13:15.496655150 +0000
++++ ./include/libbb.h	2018-11-21 10:14:44.769987416 +0000
+@@ -2025,7 +2025,7 @@
+ extern const char bb_busybox_exec_path[] ALIGN1;
+ /* allow default system PATH to be extended via CFLAGS */
+ #ifndef BB_ADDITIONAL_PATH
+-#define BB_ADDITIONAL_PATH ""
++#define BB_ADDITIONAL_PATH ":/usr/local/bin"
+ #endif
+ #define BB_PATH_ROOT_PATH "PATH=/sbin:/usr/sbin:/bin:/usr/bin" BB_ADDITIONAL_PATH
+ extern const char bb_PATH_root_path[] ALIGN1; /* BB_PATH_ROOT_PATH */
